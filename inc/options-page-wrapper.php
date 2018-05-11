@@ -16,11 +16,6 @@
 
           <div class="postbox">
 
-            <div class="handlediv" title="Click to toggle">
-              <br>
-            </div>
-            <!-- Toggle -->
-
             <h2 class="hndle">
               <span>Let's Get Started</span>
             </h2>
@@ -53,11 +48,6 @@
 
           <div class="postbox">
 
-            <div class="handlediv" title="Click to toggle">
-              <br>
-            </div>
-            <!-- Toggle -->
-
             <h2 class="hndle">
               <span>Most Recent Badges</span>
             </h2>
@@ -69,16 +59,23 @@
               <ul class="wptreehouse-badges">
 
                 <?php for ($i = 0; $i < 20; $i++): ?>
+                <?php 
+                  $badge =  $wptreehouse_profile->{'badges'}[$i];
+                  $courses = $badge->{'courses'}; ?>
                 <li>
                   <ul>
                     <li>
-                      <img class="wptreehouse-gravatar" width="120px" src="<?php echo $plugin_url . '/images/wp-badge.png'; ?>">
+                      <img class="wptreehouse-gravatar" width="120px" src="<?php echo $badge->{'icon_url'}?>">
                     </li>
                     <li class="wptreehouse-badge-name">
-                      <a href="#">Badge Name</a>
+                      <a href="<?php echo $badge->{'url'}?>">
+                        <?php echo $badge->{'name'}?>
+                      </a>
                     </li>
                     <li class="wptreehouse-project-name">
-                      <a href="#">Project Name</a>
+                      <a href="<?php echo isset($courses[0]->{'url'}) ? $courses[0]->{'url'} : ''  ;?>">
+                        <?php echo isset($courses[0]->{'title'}) ? $courses[0]->{'title'} : ''  ;?>
+                      </a>
                     </li>
                   </ul>
                 </li>
@@ -90,6 +87,24 @@
 
           </div>
           <!-- .postbox -->
+
+          <div class="postbox">
+
+            <h2 class="hndle">
+              <span>Most Recent Badges</span>
+            </h2>
+
+            <div class="inside">
+              <p>
+                <?php echo $wptreehouse_profile->{'name'}; ?>
+              </p>
+              <p>
+                <?php echo $wptreehouse_profile->{'profile_url'}; ?>
+              </p>
+              <pre><code><?php var_dump($wptreehouse_profile->{'badges'}[0]); ?></code></pre>
+            </div>
+          </div>
+
           <?php endif; ?>
         </div>
         <!-- .meta-box-sortables .ui-sortable -->
@@ -124,6 +139,23 @@
                 </li>
 
               </ul>
+
+              <form name="wptreehouse_username_form" method="post" action="">
+
+                <input type="hidden" name="wptreehouse_form_submitted" value="Y">
+                <p>
+                  <label for="wptreehouse_username">Username</label>
+                </p>
+
+                <p>
+                  <input name="wptreehouse_username" id="wptreehouse_username" type="text" value="<?php echo $wptreehouse_username; ?>"
+                  />
+                </p>
+
+                <p>
+                  <input class="button-primary" type="submit" name="wptreehouse_username_submit" value="Update" />
+                </p>
+              </form>
 
             </div>
             <!-- .inside -->
