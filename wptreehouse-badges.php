@@ -18,6 +18,7 @@
 
 $plugin_url = WP_PLUGIN_URL . '/wptreehouse-badges';
 $options = array();
+$display_json = false;
 
 /*
  * Add a link to our plugin in the admin menu
@@ -52,6 +53,7 @@ function wptreehouse_badges_options_page()
 
     global $plugin_url;
     global $options;
+    global $display_json;
 
     if (isset($_POST['wptreehouse_form_submitted'])) {
         $hidden_field = esc_html($_POST['wptreehouse_form_submitted']);
@@ -70,7 +72,7 @@ function wptreehouse_badges_options_page()
     }
 
     $options = get_option('wptreehouse_badges');
-    
+
     if ($options != '') {
         $wptreehouse_username = $options['wptreehouse_username'];
         $wptreehouse_profile = $options['wptreehouse_profile'];
@@ -79,11 +81,59 @@ function wptreehouse_badges_options_page()
     require 'inc/options-page-wrapper.php';
 }
 
+class Wptreehouse_Badges_Widget extends WP_Widget
+{
+    public function __construct()
+    {
+        // Instantiate the parent object
+        parent::__construct(false, 'Official Treehouse Badges Widget');
+    }
+
+    public function widget($args, $instance)
+    {
+        // Widget output
+
+        extract($args);
+        $title = apply_filters('widget_title', $instance['title']);
+
+        $options = get_option('wptreehouse_badges');
+        $wptreehouse_profile = $options['wptreehouse_profile'];
+
+        require('inc/front-end.php');
+    }
+
+    public function update($new_instance, $old_instance)
+    {
+        // Save widget options
+
+        $instance = $old_instance;
+        $instance['title'] = strip_tags($new_instance['title']);
+
+        return $instance;
+    }
+
+    public function form($instance)
+    {
+        // Output admin widget options form
+
+        $title = isset($instance['title']) ? esc_attr($instance['title']) : '';
+
+        require('inc/widget-fields.php');
+    }
+}
+
+function wptreehouse_badges_register_widgets()
+{
+    register_widget('Wptreehouse_Badges_Widget');
+}
+
+add_action('widgets_init', 'wptreehouse_badges_register_widgets');
+
 function wptreehouse_badges_get_profile($wptreehouse_username)
 {
     $json_feed_url = 'http://teamtreehouse.com/' . $wptreehouse_username . '.json';
     $args = array( 'timeout' => 120);
-    
+
     $json_feed = wp_remote_get($json_feed_url, $args);
 
     $wptreehouse_profile = json_decode($json_feed['body']);
