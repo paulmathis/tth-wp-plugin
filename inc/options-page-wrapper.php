@@ -57,8 +57,11 @@
 							<p>Below are your 20 most recent badges</p>
 
 							<ul class="wptreehouse-badges">
+							<?php 
+									$total_badges = count( $wptreehouse_profile->{'badges'} );
 
-								<?php for ($i = 0; $i < 20; $i++): ?>
+									for( $i = $total_badges - 1; $i >= $total_badges - 20; $i-- ):		
+							?>
 								<li>
 									<ul>
 										<li>
